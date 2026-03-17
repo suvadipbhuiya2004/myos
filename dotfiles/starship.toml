@@ -1,117 +1,269 @@
 add_newline = false
 command_timeout = 500
 
-# -----------------------------------------------------------------------------
-# 1. FORMAT STRING
-# -----------------------------------------------------------------------------
+"$schema" = 'https://starship.rs/config-schema.json'
+
 format = """
 $username\
-$hostname: \
 $directory\
+$fill\
+$time\
+$conda\
+$c\
+$rust\
+$golang\
+$nodejs\
+$php\
+$java\
+$kotlin\
+$haskell\
+$python\
 $git_branch\
 $git_status\
-$c\
-$java\
-${custom.javascript}\
-${custom.typescript}\
-$zig\
-$rust\
-$python\
-$character\
-"""
+$line_break\
+$character"""
 
-# -----------------------------------------------------------------------------
-# 2. CORE SETTINGS (User, Host, Directory)
-# -----------------------------------------------------------------------------
+palette = 'catppuccin_mocha'
+
+[fill]
+symbol = " "
+
+
 [username]
 show_always = true
-style_user = "bold purple"
-style_root = "bold red"
-format = "[$user]($style)"
-
-[hostname]
-ssh_only = true
-style = "bold yellow"
-format = "@[$hostname]($style)"
+style_user = "red"
+style_root = "red"
+format = '[$user]($style)'
 
 [directory]
-truncation_length = 2
+style = "peach"
+format = "[ $path ]($style)"
+truncation_length = 3
 truncation_symbol = "…/"
-style = "bold blue"
-read_only = " 🔒"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = "󰝚 "
+"Pictures" = " "
+"Developer" = "󰲋 "
+"/path/to/Dev/Projects/Personal" = "💻🎧 Personal"
+"/path/to/Dev/Projects/AI" = "🤖🧠 AI"
+"/path/to/Dev/Projects/Work" = "💼⚕️ Work"
+"/path/to/Dev/Projects" = "🗂️🚀 Projects"
+"/path/to/Dev" = "👨🏻‍💻󰲋 Dev"
 
 [git_branch]
-format = "[$branch]($style) "
-style = "italic green"
+symbol = ""
+style = "yellow"
+format = '([[ $branch ](green)]($style))'
 
 [git_status]
-format = '[$all_status]($style)'
-style = "red"
-ahead = "⇡${count} "
-behind = "⇣${count} "
-modified = " "
+style = "yellow"
+format = '([[$all_status$ahead_behind ](yellow)]($style))'
+conflicted = ' conflicted '
+ahead = '⇡${count} '
+behind = '⇣${count} '
+diverged = '⇕⇡${ahead_count}⇣${behind_count} '
+up_to_date = ''  # Empty when up to date
+untracked = 'untracked-${count} '
+stashed = 'stashed-${count} '
+modified = 'modified-${count} '
+staged = 'staged-${count} '
+renamed = 'renamed-${count} '
+deleted = 'deleted-${count} '
+typechanged = ""
+ignore_submodules = false
+
+[git_commit]
+style = "yellow"
+format = '([[\($hash$tag\)](yellow)]($style))'
+commit_hash_length = 4
+tag_symbol = '🔖 '
+
+[nodejs]
+symbol = " 󰎙"
+style = "teal"
+format = '[[ $symbol( $version) ](green)]($style)'
+
+[c]
+symbol = ""
+style = "green"
+format = '[[ $symbol( $version) ](green)]($style)'
+
+[rust]
+symbol = ""
+style = "green"
+format = '[[ $symbol( $version) ](green)]($style)'
+
+[golang]
+symbol = ""
+style = "green"
+format = '[[ $symbol( $version) ](green)]($style)'
+
+[php]
+symbol = ""
+style = "green"
+format = '[[ $symbol( $version) ](green)]($style)'
+
+[java]
+symbol = ""
+style = "green"
+format = '[[ $symbol( $version) ](green)]($style)'
+
+[kotlin]
+symbol = ""
+style = "green"
+format = '[[ $symbol( $version) ](green)]($style)'
+
+[haskell]
+symbol = ""
+style = "green"
+format = '[[ $symbol( $version) ](green)]($style)'
+
+[python]
+symbol = ""
+style = "green"
+format = '[[ $symbol( $version)(\(#$virtualenv\)) ](green)]($style)'
+
+[docker_context]
+symbol = ""
+style = "sapphire"
+format = '[[ $symbol( $context) ](sapphire)]($style)'
+
+[conda]
+symbol = "  "
+style = "sapphire"
+format = '[$symbol$environment ](sapphire)'
+ignore_base = false
+
+[time]
+disabled = false
+time_format = "%R"
+style = "lavender"
+format = '[[  $time ](lavender)]($style)'
+
+[line_break]
+disabled = false
 
 [character]
-success_symbol = "[❯](bold green)"
-error_symbol = "[✗](bold red)"
-
-
-# -----------------------------------------------------------------------------
-# 3. LANGUAGES 
-# -----------------------------------------------------------------------------
-
-# --- C & C++ (Built-in) ---
-[c]
 disabled = false
-symbol = " "
-style = "bold blue"
-format = '[$symbol]($style)'
-
-# --- Java (Built-in) ---
-[java]
-symbol = " "
-style = "bold red"
-format = '[$symbol]($style)'
-
-# --- JAVASCRIPT & JSX (Custom) ---
-[custom.javascript]
-detect_extensions = ["js", "jsx", "mjs", "cjs"]
-command = "true"
-symbol = " "
-style = "bold yellow"
-format = '[$symbol]($style)'
-
-# --- TYPESCRIPT & TSX (Custom) ---
-[custom.typescript]
-detect_extensions = ["ts", "tsx", "mts", "cts"]
-command = "true"
-symbol = " "
-style = "bold blue"
-format = '[$symbol]($style)'
-
-# --- Zig (Built-in) ---
-[zig]
-symbol = " "
-style = "bold yellow"
-format = '[$symbol]($style)'
-
-# --- Rust (Built-in) ---
-[rust]
-symbol = " "
-style = "bold red"
-format = '[$symbol]($style)'
-
-# --- Python & Venv (Built-in) ---
-[python]
-symbol = " " # Official Python Logo
-style = "bold yellow"
-format = '[$symbol(\($virtualenv\) )]($style)'
+success_symbol = '[ ](bold fg:green)'
+error_symbol = '[ ](bold fg:red)'
+vimcmd_symbol = '[❮](bold fg:green)'
+vimcmd_replace_one_symbol = '[❮](bold fg:lavender)'
+vimcmd_replace_symbol = '[❮](bold fg:lavender)'
+vimcmd_visual_symbol = '[❮](bold fg:yellow)'
 
 
-# -----------------------------------------------------------------------------
-# 4. DISABLE CONFLICTING MODULES
-# -----------------------------------------------------------------------------
-# We disabled the built-in nodejs module because we replaced it
-# with our custom JS and TS modules above.
-[nodejs]
-disabled = true
+[palettes.catppuccin_mocha]
+rosewater = "#f5e0dc"
+flamingo = "#f2cdcd"
+pink = "#f5c2e7"
+mauve = "#cba6f7"
+red = "#f38ba8"
+maroon = "#eba0ac"
+peach = "#fab387"
+yellow = "#f9e2af"
+green = "#a6e3a1"
+teal = "#94e2d5"
+sky = "#89dceb"
+sapphire = "#74c7ec"
+blue = "#89b4fa"
+lavender = "#b4befe"
+text = "#cdd6f4"
+subtext1 = "#bac2de"
+subtext0 = "#a6adc8"
+overlay2 = "#9399b2"
+overlay1 = "#7f849c"
+overlay0 = "#6c7086"
+surface2 = "#585b70"
+surface1 = "#45475a"
+surface0 = "#313244"
+base = "#1e1e2e"
+mantle = "#181825"
+crust = "#11111b"
+
+[palettes.catppuccin_frappe]
+rosewater = "#f2d5cf"
+flamingo = "#eebebe"
+pink = "#f4b8e4"
+mauve = "#ca9ee6"
+red = "#e78284"
+maroon = "#ea999c"
+peach = "#ef9f76"
+yellow = "#e5c890"
+green = "#a6d189"
+teal = "#81c8be"
+sky = "#99d1db"
+sapphire = "#85c1dc"
+blue = "#8caaee"
+lavender = "#babbf1"
+text = "#c6d0f5"
+subtext1 = "#b5bfe2"
+subtext0 = "#a5adce"
+overlay2 = "#949cbb"
+overlay1 = "#838ba7"
+overlay0 = "#737994"
+surface2 = "#626880"
+surface1 = "#51576d"
+surface0 = "#414559"
+base = "#303446"
+mantle = "#292c3c"
+crust = "#232634"
+
+[palettes.catppuccin_latte]
+rosewater = "#dc8a78"
+flamingo = "#dd7878"
+pink = "#ea76cb"
+mauve = "#8839ef"
+red = "#d20f39"
+maroon = "#e64553"
+peach = "#fe640b"
+yellow = "#df8e1d"
+green = "#40a02b"
+teal = "#179299"
+sky = "#04a5e5"
+sapphire = "#209fb5"
+blue = "#1e66f5"
+lavender = "#7287fd"
+text = "#4c4f69"
+subtext1 = "#5c5f77"
+subtext0 = "#6c6f85"
+overlay2 = "#7c7f93"
+overlay1 = "#8c8fa1"
+overlay0 = "#9ca0b0"
+surface2 = "#acb0be"
+surface1 = "#bcc0cc"
+surface0 = "#ccd0da"
+base = "#eff1f5"
+mantle = "#e6e9ef"
+crust = "#dce0e8"
+
+[palettes.catppuccin_macchiato]
+rosewater = "#f4dbd6"
+flamingo = "#f0c6c6"
+pink = "#f5bde6"
+mauve = "#c6a0f6"
+red = "#ed8796"
+maroon = "#ee99a0"
+peach = "#f5a97f"
+yellow = "#eed49f"
+green = "#a6da95"
+teal = "#8bd5ca"
+sky = "#91d7e3"
+sapphire = "#7dc4e4"
+blue = "#8aadf4"
+lavender = "#b7bdf8"
+text = "#cad3f5"
+subtext1 = "#b8c0e0"
+subtext0 = "#a5adcb"
+overlay2 = "#939ab7"
+overlay1 = "#8087a2"
+overlay0 = "#6e738d"
+surface2 = "#5b6078"
+surface1 = "#494d64"
+surface0 = "#363a4f"
+base = "#24273a"
+mantle = "#1e2030"
+crust = "#181926"
