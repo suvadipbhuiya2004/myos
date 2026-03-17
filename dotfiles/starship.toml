@@ -1,0 +1,117 @@
+add_newline = false
+command_timeout = 500
+
+# -----------------------------------------------------------------------------
+# 1. FORMAT STRING
+# -----------------------------------------------------------------------------
+format = """
+$username\
+$hostname: \
+$directory\
+$git_branch\
+$git_status\
+$c\
+$java\
+${custom.javascript}\
+${custom.typescript}\
+$zig\
+$rust\
+$python\
+$character\
+"""
+
+# -----------------------------------------------------------------------------
+# 2. CORE SETTINGS (User, Host, Directory)
+# -----------------------------------------------------------------------------
+[username]
+show_always = true
+style_user = "bold purple"
+style_root = "bold red"
+format = "[$user]($style)"
+
+[hostname]
+ssh_only = true
+style = "bold yellow"
+format = "@[$hostname]($style)"
+
+[directory]
+truncation_length = 2
+truncation_symbol = "…/"
+style = "bold blue"
+read_only = " 🔒"
+
+[git_branch]
+format = "[$branch]($style) "
+style = "italic green"
+
+[git_status]
+format = '[$all_status]($style)'
+style = "red"
+ahead = "⇡${count} "
+behind = "⇣${count} "
+modified = " "
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[✗](bold red)"
+
+
+# -----------------------------------------------------------------------------
+# 3. LANGUAGES 
+# -----------------------------------------------------------------------------
+
+# --- C & C++ (Built-in) ---
+[c]
+disabled = false
+symbol = " "
+style = "bold blue"
+format = '[$symbol]($style)'
+
+# --- Java (Built-in) ---
+[java]
+symbol = " "
+style = "bold red"
+format = '[$symbol]($style)'
+
+# --- JAVASCRIPT & JSX (Custom) ---
+[custom.javascript]
+detect_extensions = ["js", "jsx", "mjs", "cjs"]
+command = "true"
+symbol = " "
+style = "bold yellow"
+format = '[$symbol]($style)'
+
+# --- TYPESCRIPT & TSX (Custom) ---
+[custom.typescript]
+detect_extensions = ["ts", "tsx", "mts", "cts"]
+command = "true"
+symbol = " "
+style = "bold blue"
+format = '[$symbol]($style)'
+
+# --- Zig (Built-in) ---
+[zig]
+symbol = " "
+style = "bold yellow"
+format = '[$symbol]($style)'
+
+# --- Rust (Built-in) ---
+[rust]
+symbol = " "
+style = "bold red"
+format = '[$symbol]($style)'
+
+# --- Python & Venv (Built-in) ---
+[python]
+symbol = " " # Official Python Logo
+style = "bold yellow"
+format = '[$symbol(\($virtualenv\) )]($style)'
+
+
+# -----------------------------------------------------------------------------
+# 4. DISABLE CONFLICTING MODULES
+# -----------------------------------------------------------------------------
+# We disabled the built-in nodejs module because we replaced it
+# with our custom JS and TS modules above.
+[nodejs]
+disabled = true

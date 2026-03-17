@@ -1,0 +1,14 @@
+# 1. Make auto-suggestions sleek (Subtle gray text, NO background)
+ble-face -s auto_complete fg=240,bg=none
+
+
+# 3. Highlight the matching part of the typed word in the menu
+ble-face -s menu_filter_fixed fg=magenta,bold
+
+# 4. Remove harsh backgrounds from command syntax highlighting
+ble-face -s command_builtin fg=cyan,bg=none
+ble-face -s command_file fg=green,bg=none
+
+
+# Disable the audible bell in ble.sh
+bleopt edit_abell=

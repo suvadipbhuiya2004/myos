@@ -1,0 +1,45 @@
+theme = "ao"
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+
+[editor]
+line-number = "relative"
+
+# Configure inline diagnostics by setting the minimum severity level 
+# Valid levels: "error", "warning", "info", "hint", or "disable"
+[editor.inline-diagnostics]
+cursor-line = "hint" # Shows hint, info, warning, and error on the active line
+other-lines = "hint" # Shows hint, info, warning, and error on all other lines
+
+
+[keys.normal]
+# Bind 'y' to system clipboard
+y = "yank_to_clipboard"
+# Bind 'p' and 'P' to paste from system clipboard
+p = "paste_clipboard_after"
+P = "paste_clipboard_before"
+
+# Bind Leader (Space) + keys to internal Helix register
+[keys.normal.space]
+y = "yank"
+p = "paste_after"
+P = "paste_before"
+
+
+[keys.select]
+# Make 'y' copy to system clipboard
+y = "yank_to_clipboard"
+
+# Make 'p' replace the selection with system clipboard
+p = "replace_selections_with_clipboard"
+
+[keys.select.space]
+# Make 'Space+y' copy to internal register
+y = "yank"
+
+# Make 'Space+p' replace the selection with internal register
+p = "replace_with_yanked"
