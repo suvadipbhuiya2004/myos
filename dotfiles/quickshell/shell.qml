@@ -1,3 +1,6 @@
+
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import Quickshell
 import Quickshell.Io // This is required for the IpcHandler
