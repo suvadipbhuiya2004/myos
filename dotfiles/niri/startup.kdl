@@ -1,1 +1,6 @@
 spawn-at-startup "vicinae" "server"
+spawn-at-startup "mako"
+hotkey-overlay {
+    skip-at-startup
+}
+spawn-sh-at-startup "~/myos/scripts/wallpaper_rotate.sh"

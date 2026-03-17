@@ -1,0 +1,26 @@
+# Global settings
+max-history=100
+sort=-time
+
+# Appearance
+font=sans-serif 10
+width=300
+height=100
+margin=10
+padding=15
+border-size=2
+border-radius=5
+
+# Colors (Dark Theme Example)
+background-color=#1e1e2e
+text-color=#cdd6f4
+border-color=#89b4fa
+progress-color=over #313244
+
+# Behavior
+default-timeout=5000
+
+# Style for 'Urgent' notifications
+[urgency=high]
+border-color=#f38ba8
+default-timeout=0
