@@ -6,6 +6,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import Quickshell
 import Quickshell.Io
+import Quickshell.Services.SystemTray
 
 import "../module"
 
@@ -75,7 +76,6 @@ PanelWindow {
     // --- 3. [NEW] Quickshell Process: Niri Workspaces ---
     Process {
         id: niriProc
-        // REPLACE THIS WITH YOUR ACTUAL SCRIPT PATH
         command: ["bash", Quickshell.env("HOME") + "/myos/dotfiles/quickshell/bar/niri_window_and_workspace.sh"]
         running: true
         
@@ -95,7 +95,6 @@ PanelWindow {
     }
 
     // --- 4. Timer to loop the updates ---
-    // Note: Niri process is not here because it uses an event stream and never stops
     Timer {
         interval: 2000 
         running: true
@@ -129,10 +128,9 @@ PanelWindow {
         }
 
         // ==========================================
-        // [NEW] CENTER: Niri Workspaces
+        // CENTER: Niri Workspaces
         // ==========================================
         RowLayout {
-            // This anchors the entire RowLayout to the exact center of the bar
             anchors.centerIn: parent
             spacing: 8
 
@@ -140,7 +138,6 @@ PanelWindow {
                 model: mainWindow.workspacesData
 
                 delegate: Rectangle {
-
                     required property var modelData
                     readonly property bool isActive: modelData.workspace_id.toString() === mainWindow.activeWorkspace
 
@@ -162,13 +159,58 @@ PanelWindow {
         }
 
         // ==========================================
-        // RIGHT SIDE: Wi-Fi & Bluetooth Modules
+        // RIGHT SIDE: System Tray, Wi-Fi & Bluetooth
         // ==========================================
         RowLayout {
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
             anchors.rightMargin: 20
             spacing: 25
+
+            // --- UI: System Tray ---
+            RowLayout {
+                spacing: 8
+                
+                Repeater {
+                    model: SystemTray.items
+
+                    delegate: Rectangle {
+                        required property var modelData
+
+                        width: 24
+                        height: 24
+                        color: trayMouse.containsMouse ? "#313244" : "transparent" 
+                        radius: 4
+
+                        Image {
+                            anchors.centerIn: parent
+                            width: 18
+                            height: 18
+                            source: modelData.icon 
+                            fillMode: Image.PreserveAspectFit
+                        }
+
+                        MouseArea {
+                            id: trayMouse
+                            anchors.fill: parent
+                            acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+                            hoverEnabled: true
+
+                            onClicked: (mouse) => {
+                                if (mouse.button === Qt.LeftButton) {
+                                    modelData.activate(); 
+                                } else if (mouse.button === Qt.RightButton) {
+                                    if (modelData.hasMenu) {
+                                        modelData.display(mainWindow, mouse.x, mouse.y);
+                                    }
+                                } else if (mouse.button === Qt.MiddleButton) {
+                                    modelData.secondaryActivate();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             // --- UI: Wi-Fi Module ---
             RowLayout {
