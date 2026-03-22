@@ -160,3 +160,15 @@ batman() {
 export ANDROID_HOME=$HOME/Android/Sdk
 export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/platform-tools
+
+
+
+function yazi() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+	# Notice the word 'command' added to the line below!
+	command yazi "$@" --cwd-file="$tmp"
+	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}

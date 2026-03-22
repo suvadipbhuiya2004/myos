@@ -98,6 +98,7 @@ Item {
                     }
 
                     Column {
+                        // format: "hh:mm AP"
                         anchors.centerIn: parent
                         spacing: 24
                         width: 320

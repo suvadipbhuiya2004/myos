@@ -5,12 +5,12 @@ import QtQuick
 import Quickshell
 import Quickshell.Io // This is required for the IpcHandler
 
-// import "bar"
+import "bar"
 import "lock_screen"
 
 ShellRoot {
     // 1. Launch the Status Bar immediately
-    // Bar { }
+    Bar { }
 
     // 2. Keep the Lock Screen on standby
     Loader {
