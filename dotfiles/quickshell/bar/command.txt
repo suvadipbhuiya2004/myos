@@ -1,5 +1,0 @@
-to get the name of conneted wifi
-nmcli -t -f TYPE,NAME connection show --active | grep 802-11-wireless | cut -d: -f2
-
-for bluetooth name
-bluetoothctl devices Connected | cut -d' ' -f3-

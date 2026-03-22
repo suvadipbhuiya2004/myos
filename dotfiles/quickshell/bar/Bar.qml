@@ -1,9 +1,13 @@
 
+pragma ComponentBehavior: Bound
+
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import Quickshell
 import Quickshell.Io
+
+import "../module"
 
 PanelWindow {
     id: mainWindow
@@ -28,13 +32,16 @@ PanelWindow {
     property string btIcon: "󰂲"
     property string btText: "Loading..."
 
-    // New property for the focused window
     property string focusedWindow: "Desktop"
+
+    // [NEW] State variables for Niri workspaces
+    property string activeWorkspace: ""
+    property var workspacesData: []
 
     // --- 1. Quickshell Process: Wi-Fi ---
     Process {
         id: wifiProc
-        command: ["bash", "/home/suvadip/myos/dotfiles/quickshell/bar/wifi.sh", mainWindow.maxWifiLen.toString()]
+        command: ["bash", Quickshell.env("HOME") + "/myos/dotfiles/quickshell/bar/wifi.sh", mainWindow.maxWifiLen.toString()]
         running: true
         
         stdout: StdioCollector {
@@ -51,7 +58,7 @@ PanelWindow {
     // --- 2. Quickshell Process: Bluetooth ---
     Process {
         id: btProc
-        command: ["bash", "/home/suvadip/myos/dotfiles/quickshell/bar/bluetooth.sh", mainWindow.maxBtLen.toString()]
+        command: ["bash", Quickshell.env("HOME") + "/myos/dotfiles/quickshell/bar/bluetooth.sh", mainWindow.maxBtLen.toString()]
         running: true
         
         stdout: StdioCollector {
@@ -65,14 +72,32 @@ PanelWindow {
         }
     }
 
-
-
-
+    // --- 3. [NEW] Quickshell Process: Niri Workspaces ---
+    Process {
+        id: niriProc
+        // REPLACE THIS WITH YOUR ACTUAL SCRIPT PATH
+        command: ["bash", Quickshell.env("HOME") + "/myos/dotfiles/quickshell/bar/niri_window_and_workspace.sh"]
+        running: true
+        
+        stdout: SplitParser {
+            onRead: line => {
+                if (line.trim() === "") return;
+                
+                try {
+                    let data = JSON.parse(line);
+                    mainWindow.activeWorkspace = data.active_workspace.toString();
+                    mainWindow.workspacesData = data.windows_per_workspace;
+                } catch (e) {
+                    console.log("JSON Parse Error:", e, "Line:", line);
+                }
+            }
+        }
+    }
 
     // --- 4. Timer to loop the updates ---
-    
+    // Note: Niri process is not here because it uses an event stream and never stops
     Timer {
-        interval: 2000 // Reduced to 2s for a snappier window title update
+        interval: 2000 
         running: true
         repeat: true
         onTriggered: {
@@ -101,8 +126,39 @@ PanelWindow {
                 font.pixelSize: 16
                 font.bold: true
             }
+        }
 
+        // ==========================================
+        // [NEW] CENTER: Niri Workspaces
+        // ==========================================
+        RowLayout {
+            // This anchors the entire RowLayout to the exact center of the bar
+            anchors.centerIn: parent
+            spacing: 8
 
+            Repeater {
+                model: mainWindow.workspacesData
+
+                delegate: Rectangle {
+
+                    required property var modelData
+                    readonly property bool isActive: modelData.workspace_id.toString() === mainWindow.activeWorkspace
+
+                    width: wsText.implicitWidth + 16
+                    height: 24
+                    radius: 4
+                    color: isActive ? "#89b4fa" : "#313244"
+
+                    Text {
+                        id: wsText
+                        anchors.centerIn: parent
+                        text: modelData.workspace_id + " | " + modelData.count
+                        color: isActive ? "#11111b" : "#cdd6f4"
+                        font.bold: isActive
+                        font.pixelSize: 14
+                    }
+                }
+            }
         }
 
         // ==========================================
