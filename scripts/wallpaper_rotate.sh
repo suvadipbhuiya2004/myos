@@ -1,7 +1,7 @@
 #!/bin/bash
 
 WALLPAPER_DIR="$HOME/Pictures/wallpaper"
-pgrep -x swww-daemon > /dev/null || swww-daemon &
+pgrep -x awww-daemon > /dev/null || awww-daemon &
 
 mapfile -t IMAGES < <(find "$WALLPAPER_DIR" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \))
 
@@ -17,7 +17,7 @@ while true; do
 
     cp "$RANDOM_IMG" /tmp/wallpaper.jpg
     
-    swww img "$RANDOM_IMG" --transition-type outer --transition-fps 120
+    awww img "$RANDOM_IMG" --transition-type outer --transition-fps 120
     
     sleep 300
 done

@@ -1,0 +1,13 @@
+
+# Ignore Universal Variables (Prevents leaking secret tokens)
+fish_variables
+
+# Ignore your custom secrets file
+secrets.fish
+*.env
+
+# Ignore Fisher/Plugin manager downloads (Only track what YOU wrote)
+# Note: Keep the `fish_plugins` file, but ignore the installed scripts.
+# If Fisher dumps third-party scripts into these folders, you might
+# want to ignore the folders entirely and only commit specific custom scripts.
+/.cache/
