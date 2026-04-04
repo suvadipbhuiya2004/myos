@@ -21,7 +21,7 @@ print_state() {
         '$ws | sort_by(.idx) | map(
             . as $w |
             ($win | map(select(.workspace_id == $w.id)) | length) as $count |
-            select($count > 0) | 
+            select(($count > 0) or $w.is_focused) | 
             {
                 workspace_id: (if $w.name != null then $w.name else $w.idx end),
                 count: $count

@@ -15,18 +15,17 @@ Item {
 
     signal unlockSuccessful()
 
-    // 2. Global State Variables (Fixes the Unqualified Access warning)
+    // --- Global State Variables ---
     property bool isError: false
     property bool isAuthenticating: false
+    property string currentUsername: "suvadip" // Default user
 
     // --- DISPLAY SLEEP LOGIC ---
-    // Command to tell Niri to put the displays to sleep
     Process {
         id: powerOffMonitors
         command: ["niri", "msg", "action", "power-off-monitors"]
     }
 
-    // Starts counting the exact millisecond the lock screen appears
     Timer {
         id: displaySleepTimer
         interval: 60000 // 60 seconds
@@ -48,6 +47,9 @@ Item {
 
     PamContext {
         id: pam
+        user: root.currentUsername
+        
+        // Start PAM when the component is ready
         Component.onCompleted: pam.start()
 
         onCompleted: (result) => {
@@ -55,7 +57,7 @@ Item {
                 lock.locked = false; 
                 root.unlockSuccessful(); 
             } else {
-                root.isError = true; // Tell the UI we failed
+                root.isError = true; 
                 pamRestartTimer.start();
             }
         }
@@ -67,6 +69,8 @@ Item {
 
         surface: Component {
             WlSessionLockSurface {
+                id: lockSurface
+                
                 Item {
                     anchors.fill: parent
 
@@ -98,7 +102,6 @@ Item {
                     }
 
                     Column {
-                        // format: "hh:mm AP"
                         anchors.centerIn: parent
                         spacing: 24
                         width: 320
@@ -113,14 +116,15 @@ Item {
                         TextField {
                             id: usernameInput
                             width: parent.width
-                            placeholderText: "suvadip"
+                            text: root.currentUsername
+                            placeholderText: "Username"
                             placeholderTextColor: "#aaaaaa"
                             color: "white"
                             font.pixelSize: 18
                             horizontalAlignment: TextInput.AlignHCenter
-                            KeyNavigation.tab: passwordInput 
                             
-                            // Reset the display sleep timer if you type here
+                            onTextChanged: root.currentUsername = text
+                            
                             Keys.onPressed: displaySleepTimer.restart()
                             
                             background: Rectangle {
@@ -129,16 +133,17 @@ Item {
                                 border.color: usernameInput.activeFocus ? "#ffffff" : "#88ffffff"
                                 border.width: usernameInput.activeFocus ? 2 : 1
                             }
+
+                            onAccepted: passwordInput.forceActiveFocus()
                         }
 
                         TextField {
                             id: passwordInput
                             width: parent.width
                             
-                            // React dynamically to the state variables
                             placeholderText: root.isError ? "Incorrect password..." : "Password"
                             placeholderTextColor: root.isError ? "#ffaaaa" : "#aaaaaa"
-                            enabled: !root.isAuthenticating // Lock input while checking
+                            enabled: !root.isAuthenticating
                             
                             color: "white"
                             font.pixelSize: 18
@@ -146,19 +151,18 @@ Item {
                             focus: true 
                             horizontalAlignment: TextInput.AlignHCenter
 
-                            // Reset the display sleep timer if you type here
                             Keys.onPressed: displaySleepTimer.restart()
                             
-                            // Automatically grab focus again when the error timer finishes
                             onEnabledChanged: {
-                                if (enabled) forceActiveFocus();
+                                if (enabled) {
+                                    passwordInput.text = "";
+                                    passwordInput.forceActiveFocus();
+                                }
                             }
                             
                             background: Rectangle {
-                                id: passwordBackground
                                 color: "#44ffffff"
                                 radius: 8
-                                // Turn red if error, otherwise use normal focus colors
                                 border.color: root.isError ? "#ff5555" : (passwordInput.activeFocus ? "#ffffff" : "#88ffffff")
                                 border.width: passwordInput.activeFocus ? 2 : 1
                                 Behavior on border.color { ColorAnimation { duration: 200 } }
@@ -170,7 +174,7 @@ Item {
                                 root.isAuthenticating = true;
                                 root.isError = false;
                                 pam.respond(text);
-                                text = ""; // Clear text box instantly so password isn't lingering
+                                text = ""; // Clear password field
                             }
                         }
                     }

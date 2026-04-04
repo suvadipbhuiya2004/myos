@@ -1,9 +1,8 @@
-
 pragma ComponentBehavior: Bound
 
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.SystemTray
@@ -32,6 +31,9 @@ PanelWindow {
     
     property string btIcon: "󰂲"
     property string btText: "Loading..."
+
+    property string batIcon: "󰂎"
+    property string batText: "..."
 
     property string focusedWindow: "Desktop"
 
@@ -73,6 +75,23 @@ PanelWindow {
         }
     }
 
+    // --- 2.5 Quickshell Process: Battery ---
+    Process {
+        id: batProc
+        command: ["bash", Quickshell.env("HOME") + "/myos/dotfiles/quickshell/bar/battery.sh"]
+        running: true
+        
+        stdout: StdioCollector {
+            onStreamFinished: {
+                let output = this.text.trim().split("__SEP__")
+                if (output.length === 2) {
+                    mainWindow.batIcon = output[0]
+                    mainWindow.batText = output[1]
+                }
+            }
+        }
+    }
+
     // --- 3. [NEW] Quickshell Process: Niri Workspaces ---
     Process {
         id: niriProc
@@ -96,12 +115,14 @@ PanelWindow {
 
     // --- 4. Timer to loop the updates ---
     Timer {
-        interval: 2000 
+        interval: 5000 
         running: true
         repeat: true
+        triggeredOnStart: true
         onTriggered: {
-            wifiProc.running = true
-            btProc.running = true
+            if (!wifiProc.running) wifiProc.running = true
+            if (!btProc.running) btProc.running = true
+            if (!batProc.running) batProc.running = true
         }
     }
 
@@ -190,6 +211,12 @@ PanelWindow {
                             fillMode: Image.PreserveAspectFit
                         }
 
+                        QsMenuAnchor {
+                            id: trayMenu
+                            menu: modelData.menu
+                            anchor.item: trayMouse
+                        }
+
                         MouseArea {
                             id: trayMouse
                             anchors.fill: parent
@@ -201,7 +228,9 @@ PanelWindow {
                                     modelData.activate(); 
                                 } else if (mouse.button === Qt.RightButton) {
                                     if (modelData.hasMenu) {
-                                        modelData.display(mainWindow, mouse.x, mouse.y);
+                                        trayMenu.open();
+                                    } else {
+                                        modelData.secondaryActivate();
                                     }
                                 } else if (mouse.button === Qt.MiddleButton) {
                                     modelData.secondaryActivate();
@@ -237,6 +266,21 @@ PanelWindow {
                 }
                 Text {
                     text: mainWindow.btText 
+                    color: "#cdd6f4"
+                    font.pixelSize: 14
+                }
+            }
+
+            // --- UI: Battery Module ---
+            RowLayout {
+                spacing: 8
+                Text {
+                    text: mainWindow.batIcon 
+                    color: "#a6e3a1" 
+                    font.pixelSize: 18
+                }
+                Text {
+                    text: mainWindow.batText 
                     color: "#cdd6f4"
                     font.pixelSize: 14
                 }

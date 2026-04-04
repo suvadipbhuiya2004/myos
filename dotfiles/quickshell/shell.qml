@@ -1,4 +1,5 @@
 
+//@ pragma UseQApplication
 pragma ComponentBehavior: Bound
 
 import QtQuick
@@ -17,9 +18,11 @@ ShellRoot {
         id: lockScreenLoader
         active: false // Keep it hidden until triggered
         
-        sourceComponent: Lock_screen {
-            // Listens for the signal we added to your LockScreen.qml
-            onUnlockSuccessful: lockScreenLoader.active = false
+        sourceComponent: Component {
+            Lock_screen {
+                // Listens for the signal we added to your LockScreen.qml
+                onUnlockSuccessful: lockScreenLoader.active = false
+            }
         }
     }
 
@@ -33,3 +36,5 @@ ShellRoot {
         }
     }
 }
+
+
