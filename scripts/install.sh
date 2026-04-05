@@ -52,6 +52,8 @@ PACMAN_PKGS=(
 )
 
 AUR_PKGS=(
+    "blesh"
+    "bibata-cursor-theme-bin"
     "quickshell-git"   # Desktop shell/bar
     "vicinae-bin"      # Launcher and extensions
 )

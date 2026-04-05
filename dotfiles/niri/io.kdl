@@ -98,3 +98,15 @@ input {
     // automatically.
     position x=1280 y=0
 }
+
+
+cursor {
+    // The name must match the folder name in /usr/share/icons or ~/.icons
+    xcursor-theme "Bibata-Modern-Ice"
+    
+    // Standard sizes are 24, 32, 48
+    xcursor-size 32
+
+    // Optional: hide cursor after inactivity (ms)
+    // hide-after-inactive-ms 1000
+}
