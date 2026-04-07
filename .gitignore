@@ -64,3 +64,11 @@ flycheck_*.el
 /tramp
 /transient/
 /var/
+
+
+config.el
+elpa/
+eln-cache/
+*~
+\#*\#
+.\#*
