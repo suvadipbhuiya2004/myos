@@ -5,7 +5,6 @@ BOLD="\e[1m"
 BOLD_RESET="\e[0m"
 
 PACMAN_PKGS=(
-    "awesome-terminal-fonts" # Iconic font for powerline and terminals
     "awww"                   # Wallpaper daemon
     "bat"                    # A cat clone with wings
     "bluez"                  # Bluetooth stack
@@ -27,6 +26,7 @@ PACMAN_PKGS=(
     "pipewire"               # Audio/video server
     "pipewire-audio"         # Audio support
     "playerctl"              # Media player control
+    "qrencode"
     "ripgrep"                # Fast grep tool
     "rustup"                 # Rust toolchain installer
     "starship"               # Shell prompt

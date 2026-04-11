@@ -8,3 +8,7 @@ spawn-sh-at-startup "~/myos/scripts/wallpaper_rotate.sh"
 
 spawn-at-startup "qs"
 spawn-at-startup "swayidle" "-w" "timeout" "300" "qs ipc call system lock" "before-sleep" "qs ipc call system lock"
+
+
+
+spawn-at-startup "emacs" "--daemon"

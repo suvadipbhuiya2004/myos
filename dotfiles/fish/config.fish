@@ -137,3 +137,59 @@ set -gx ANDROID_HOME $HOME/Android/Sdk
 # Append the emulator and platform-tools to your PATH
 fish_add_path $ANDROID_HOME/emulator
 fish_add_path $ANDROID_HOME/platform-tools
+
+# ==========================================
+# QR Code Generators (qrencode)
+# ==========================================
+
+function qr --description "Generate and display a QR code directly in the terminal"
+    if test (count $argv) -eq 0
+        echo "Usage: qr <text or url>"
+        return 1
+    end
+    # Uses ANSIUTF8 for clean terminal rendering
+    qrencode -t ANSIUTF8 $argv
+end
+
+function qrcp --description "Generate a QR code and copy the image to the Wayland clipboard"
+    if test (count $argv) -eq 0
+        echo "Usage: qrcp <text or url>"
+        return 1
+    end
+    # Generates a PNG to standard output and pipes it to wl-copy
+    qrencode -t PNG -o - $argv | wl-copy -t image/png
+    echo "✅ QR Code image copied to your clipboard!"
+end
+
+function qrsave --description "Generate a QR code and save it to a PNG file"
+    if test (count $argv) -lt 2
+        echo "Usage: qrsave <filename.png> <text or url>"
+        return 1
+    end
+    set filename $argv[1]
+    set data $argv[2..-1]
+
+    qrencode -t PNG -o $filename $data
+    echo "✅ QR Code successfully saved to $filename"
+end
+
+# ==========================================
+# Emacs Non-Blocking Client
+# ==========================================
+
+function emacs --description "Launch Emacs non-blocking GUI"
+    # Set target to current directory if no arguments are provided
+    set target "."
+    if test (count $argv) -gt 0
+        set target $argv
+    end
+
+    # -c: Create a new visual frame (GUI window)
+    # -n: No-wait (makes it non-blocking in the terminal)
+    # -a "": Alternate editor empty string (auto-starts the daemon if not running)
+    emacsclient -c -n -a "" $target
+end
+
+alias em='emacs'
+alias ema='emacs'
+alias emac='emacs'

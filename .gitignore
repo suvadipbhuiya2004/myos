@@ -69,6 +69,7 @@ flycheck_*.el
 config.el
 elpa/
 eln-cache/
+elpaca/
 *~
 \#*\#
 .\#*
