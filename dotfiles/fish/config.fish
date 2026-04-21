@@ -177,7 +177,7 @@ end
 # Emacs Non-Blocking Client
 # ==========================================
 
-function emacs --description "Launch Emacs non-blocking GUI"
+function em --description "Launch Emacs non-blocking GUI"
     # Set target to current directory if no arguments are provided
     set target "."
     if test (count $argv) -gt 0
@@ -190,6 +190,5 @@ function emacs --description "Launch Emacs non-blocking GUI"
     emacsclient -c -n -a "" $target
 end
 
-alias em='emacs'
 alias ema='emacs'
 alias emac='emacs'
